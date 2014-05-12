@@ -1,0 +1,12 @@
+﻿@model OrchardHarvest2014.WorkflowsJobsDemo.ViewModels.SubscribeViewModel
+@Html.ValidationSummary()
+@using (Html.BeginFormAntiForgeryPost()) {
+    <fieldset>
+        <legend>@T("Subscribe")</legend>
+        <div class="form-group">
+            @Html.LabelFor(m => m.EmailAddress, T("Email Address"))
+            @Html.TextBoxFor(m => m.EmailAddress, new {@class = "form-control"})
+        </div>
+    </fieldset>
+    <button type="submit">@T("Subscribe")</button>
+}

@@ -1,0 +1,12 @@
+﻿Name: OrchardHarvest 2014 - Workflows and Jobs Demo
+AntiForgery: enabled
+Author: The Orchard Team
+Website: http://orchardproject.net
+Version: 1.0
+OrchardVersion: 1.8
+Description: Demonstrates the Workflows and Jobs API.
+Features:
+    OrchardHarvest2014.WorkflowsJobsDemo:
+        Name: OrchardHarvest 2014 - Workflows and Jobs Demo
+        Description: Demonstrates the Workflows and Jobs API.
+        Category: Orchard Harvest
