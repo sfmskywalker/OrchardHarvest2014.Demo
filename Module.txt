@@ -10,3 +10,4 @@ Features:
         Name: OrchardHarvest 2014 - Workflows and Jobs Demo
         Description: Demonstrates the Workflows and Jobs API.
         Category: Orchard Harvest
+        Dependencies: Orchard.Users, Orchard.Roles, Orchard.Workflows, Orchard.Forms

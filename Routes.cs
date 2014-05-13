@@ -8,10 +8,10 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo {
         public IEnumerable<RouteDescriptor> GetRoutes() {
             yield return new RouteDescriptor {
                 Route = new Route(
-                    "MailingList/{action}",
+                    "Account/{action}",
                     new RouteValueDictionary {
                         {"action", "Index"},
-                        {"controller", "MailingList"},
+                        {"controller", "Account"},
                         {"area", "OrchardHarvest2014.WorkflowsJobsDemo"}
                     },
                     new RouteValueDictionary(),
