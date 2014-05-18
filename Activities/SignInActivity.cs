@@ -7,9 +7,11 @@ using Orchard.Workflows.Services;
 namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
     public class SignInActivity : Task {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IMembershipService _membershipService;
 
-        public SignInActivity(IAuthenticationService authenticationService) {
+        public SignInActivity(IAuthenticationService authenticationService, IMembershipService membershipService) {
             _authenticationService = authenticationService;
+            _membershipService = membershipService;
             T = NullLocalizer.Instance;
         }
 
@@ -32,7 +34,8 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
         }
 
         public override IEnumerable<LocalizedString> Execute(WorkflowContext workflowContext, ActivityContext activityContext) {
-            var user = workflowContext.GetState<IUser>("User");
+            var userName = workflowContext.GetState<string>("UserName");
+            var user = _membershipService.GetUser(userName);
             _authenticationService.SignIn(user, false);
             yield return T("Proceed");
         }

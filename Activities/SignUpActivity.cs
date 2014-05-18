@@ -33,6 +33,14 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
         }
 
         public override IEnumerable<LocalizedString> Execute(WorkflowContext workflowContext, ActivityContext activityContext) {
+            var userName = workflowContext.Tokens["UserName"] as string;
+            var emailAddress = workflowContext.Tokens["EmailAddress"] as string;
+            var password = workflowContext.Tokens["Password"] as string;
+
+            workflowContext.SetState("UserName", userName);
+            workflowContext.SetState("EmailAddress", emailAddress);
+            workflowContext.SetState("Password", password);
+
             yield return T("Proceed");
         }
     }

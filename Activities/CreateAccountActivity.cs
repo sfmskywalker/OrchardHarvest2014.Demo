@@ -36,9 +36,9 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
         }
 
         public override IEnumerable<LocalizedString> Execute(WorkflowContext workflowContext, ActivityContext activityContext) {
-            var userName = workflowContext.Tokens["UserName"] as string;
-            var emailAddress = workflowContext.Tokens["EmailAddress"] as string;
-            var password = workflowContext.Tokens["Password"] as string;
+            var userName = workflowContext.GetState<string>("UserName");
+            var emailAddress = workflowContext.GetState<string>("EmailAddress");
+            var password = workflowContext.GetState<string>("Password");
             var isUnique = _userService.VerifyUserUnicity(userName, emailAddress);
 
             if (!isUnique) {
@@ -54,9 +54,7 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
                     isApproved: true
                 ));
 
-                // Add the created user to the workflow state so that other activities can do something with it.
-                workflowContext.SetState("User", user);
-
+                workflowContext.Content = user;
                 yield return T("Done");                
             }
         }
