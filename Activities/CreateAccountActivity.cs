@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Orchard.Localization;
 using Orchard.Security;
 using Orchard.Users.Services;
@@ -22,6 +23,10 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
             get { return "CreateAccount"; }
         }
 
+        public override string Form {
+            get { return "CreateAccount"; }
+        }
+
         public override LocalizedString Category {
             get { return T("Account"); }
         }
@@ -40,6 +45,8 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
             var emailAddress = workflowContext.GetState<string>("EmailAddress");
             var password = workflowContext.GetState<string>("Password");
             var isUnique = _userService.VerifyUserUnicity(userName, emailAddress);
+            var requireEmailVerification = activityContext.GetState<bool>("RequireEmailVerification");
+            var emailVerificationTimeout = ToTimeSpan(activityContext.GetState<string>("EmailVerificationTimeout"), TimeSpan.FromDays(7));
 
             if (!isUnique) {
                 yield return T("Not Unique");
@@ -51,12 +58,27 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
                     emailAddress,
                     passwordQuestion: null,
                     passwordAnswer: null,
-                    isApproved: true
+                    isApproved: !requireEmailVerification
                 ));
 
+                var nonce = _userService.CreateNonce(user, emailVerificationTimeout.Value);
+
+                workflowContext.SetState("Nonce", nonce);
                 workflowContext.Content = user;
+                workflowContext.Record.ContentItemRecord = user.ContentItem.Record;
                 yield return T("Done");                
             }
+        }
+
+        private static TimeSpan? ToTimeSpan(string value, TimeSpan? defaultValue = null) {
+            if (String.IsNullOrWhiteSpace(value))
+                return defaultValue;
+
+            TimeSpan timeSpan;
+            if (!TimeSpan.TryParse(value, out timeSpan))
+                return defaultValue;
+
+            return timeSpan;
         }
     }
 }

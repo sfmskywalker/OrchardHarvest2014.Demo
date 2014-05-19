@@ -2,24 +2,21 @@
 using Orchard.ContentManagement;
 using Orchard.Localization;
 using Orchard.Security;
+using Orchard.Users.Models;
 using Orchard.Workflows.Models;
 using Orchard.Workflows.Services;
 
 namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
-    public class SignInActivity : Task {
-        private readonly IAuthenticationService _authenticationService;
-        private readonly IMembershipService _membershipService;
-
-        public SignInActivity(IAuthenticationService authenticationService, IMembershipService membershipService) {
-            _authenticationService = authenticationService;
-            _membershipService = membershipService;
+    public class ActivateAccountActivity : Event {
+        
+        public ActivateAccountActivity() {
             T = NullLocalizer.Instance;
         }
 
         public Localizer T { get; set; }
 
         public override string Name {
-            get { return "SignIn"; }
+            get { return "ActivateAccount"; }
         }
 
         public override LocalizedString Category {
@@ -27,7 +24,7 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
         }
 
         public override LocalizedString Description {
-            get { return T("Sign in a user."); }
+            get { return T("Triggers when an account is activated."); }
         }
 
         public override IEnumerable<LocalizedString> GetPossibleOutcomes(WorkflowContext workflowContext, ActivityContext activityContext) {
@@ -36,7 +33,7 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
 
         public override IEnumerable<LocalizedString> Execute(WorkflowContext workflowContext, ActivityContext activityContext) {
             var user = workflowContext.Content.As<IUser>();
-            _authenticationService.SignIn(user, false);
+            user.As<UserPart>().EmailStatus = UserStatus.Approved;
             yield return T("Proceed");
         }
     }

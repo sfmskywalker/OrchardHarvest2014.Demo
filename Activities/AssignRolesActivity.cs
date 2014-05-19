@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Orchard.ContentManagement;
 using Orchard.Data;
 using Orchard.Localization;
 using Orchard.Roles.Models;
@@ -46,8 +47,7 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
         }
 
         public override IEnumerable<LocalizedString> Execute(WorkflowContext workflowContext, ActivityContext activityContext) {
-            var userName = workflowContext.GetState<string>("UserName");
-            var user = _membershipService.GetUser(userName);
+            var user = workflowContext.Content.As<IUser>();
             var roles = ParseRoles(activityContext.GetState<string>("Roles"));
             var currentUserRoleRecords = _userRolesRepository.Fetch(x => x.UserId == user.Id);
             var currentRoleRecords = currentUserRoleRecords.Select(x => x.Role);

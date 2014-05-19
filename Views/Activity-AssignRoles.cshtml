@@ -1,0 +1,8 @@
+﻿@using Orchard.Roles.Models
+@{
+    var roles = (IList<RoleRecord>)Model.Roles;
+    var description = !roles.Any() ? "" : T("Assign roles: {0}", String.Join(", ", roles.Select(x => x.Name))).ToString();
+}
+
+<div class="activity-assign-roles" title="@description">
+</div>
