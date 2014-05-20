@@ -35,6 +35,8 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Controllers {
 
             // Trigger the SignUp workflow event.
             _workflowManager.TriggerEvent("SignUp", null, () => new Dictionary<string, object> {
+                {"FirstName", model.FirstName},
+                {"LastName", model.LastName},
                 {"EmailAddress", model.EmailAddress},
                 {"UserName", model.EmailAddress},
                 {"Password", model.Password}

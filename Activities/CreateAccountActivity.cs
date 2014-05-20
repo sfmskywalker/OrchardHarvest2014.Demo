@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
+using Orchard.ContentManagement;
 using Orchard.Localization;
 using Orchard.Security;
 using Orchard.Users.Services;
 using Orchard.Workflows.Models;
 using Orchard.Workflows.Services;
+using OrchardHarvest2014.WorkflowsJobsDemo.Models;
 
 namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
     public class CreateAccountActivity : Task {
         private readonly IUserService _userService;
         private readonly IMembershipService _membershipService;
+        private readonly UrlHelper _urlHelper;
 
-        public CreateAccountActivity(IUserService userService, IMembershipService membershipService) {
+        public CreateAccountActivity(IUserService userService, IMembershipService membershipService, UrlHelper urlHelper) {
             _userService = userService;
             _membershipService = membershipService;
+            _urlHelper = urlHelper;
             T = NullLocalizer.Instance;
         }
 
@@ -41,6 +46,8 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
         }
 
         public override IEnumerable<LocalizedString> Execute(WorkflowContext workflowContext, ActivityContext activityContext) {
+            var firstName = workflowContext.GetState<string>("FirstName");
+            var lastName = workflowContext.GetState<string>("LastName");
             var userName = workflowContext.GetState<string>("UserName");
             var emailAddress = workflowContext.GetState<string>("EmailAddress");
             var password = workflowContext.GetState<string>("Password");
@@ -52,6 +59,7 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
                 yield return T("Not Unique");
             }
             else {
+                // Create the user.
                 var user = _membershipService.CreateUser(new CreateUserParams(
                     userName,
                     password,
@@ -61,7 +69,14 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
                     isApproved: !requireEmailVerification
                 ));
 
-                var nonce = _userService.CreateNonce(user, emailVerificationTimeout.Value);
+                // Update ProfilePart.
+                var profilePart = user.As<UserProfilePart>();
+
+                profilePart.FirstName = firstName;
+                profilePart.LastName = lastName;
+
+                // Create a nonce for use in email templates.
+                var nonce = _urlHelper.Encode(_userService.CreateNonce(user, emailVerificationTimeout.Value));
 
                 workflowContext.SetState("Nonce", nonce);
                 workflowContext.Content = user;
