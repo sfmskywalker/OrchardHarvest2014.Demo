@@ -7,7 +7,6 @@ using Orchard.Localization;
 using Orchard.Roles.Models;
 using Orchard.Roles.Services;
 using Orchard.Security;
-using Orchard.Users.Services;
 using Orchard.Workflows.Models;
 using Orchard.Workflows.Services;
 
@@ -15,12 +14,10 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
     public class AssignRolesActivity : Task {
         private readonly IRepository<UserRolesPartRecord> _userRolesRepository;
         private readonly IRoleService _roleService;
-        private readonly IMembershipService _membershipService;
 
-        public AssignRolesActivity(IRepository<UserRolesPartRecord> userRolesRepository, IRoleService roleService, IMembershipService membershipService) {
+        public AssignRolesActivity(IRepository<UserRolesPartRecord> userRolesRepository, IRoleService roleService) {
             _userRolesRepository = userRolesRepository;
             _roleService = roleService;
-            _membershipService = membershipService;
             T = NullLocalizer.Instance;
         }
 
@@ -48,10 +45,10 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
 
         public override IEnumerable<LocalizedString> Execute(WorkflowContext workflowContext, ActivityContext activityContext) {
             var user = workflowContext.Content.As<IUser>();
-            var roles = ParseRoles(activityContext.GetState<string>("Roles"));
+            var roles = GetRoles(activityContext.GetState<string>("Roles"));
             var currentUserRoleRecords = _userRolesRepository.Fetch(x => x.UserId == user.Id);
             var currentRoleRecords = currentUserRoleRecords.Select(x => x.Role);
-            var targetRoleRecords = roles.Select(x => _roleService.GetRole(x));
+            var targetRoleRecords = roles.Select(x => _roleService.GetRoleByName(x));
 
             foreach (var role in targetRoleRecords.Where(x => !currentRoleRecords.Contains(x))) {
                 _userRolesRepository.Create(new UserRolesPartRecord { UserId = user.Id, Role = role });
@@ -60,10 +57,10 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
             yield return T("Done");
         }
 
-        private static IEnumerable<int> ParseRoles(string text) {
+        private static IEnumerable<string> GetRoles(string text) {
             return String.IsNullOrWhiteSpace(text) 
-                ? Enumerable.Empty<int>() 
-                : text.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse);
+                ? Enumerable.Empty<string>() 
+                : text.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

@@ -108,7 +108,6 @@
     <Compile Include="Activities\SignUpActivity.cs" />
     <Compile Include="Drivers\UserProfilePartDriver.cs" />
     <Compile Include="Forms\CreateAccountForm.cs" />
-    <Compile Include="Forms\SelectRolesForm.cs" />
     <Compile Include="Models\UserProfilePart.cs" />
     <Compile Include="Routes.cs" />
     <Compile Include="Migrations.cs" />

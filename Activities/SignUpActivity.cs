@@ -48,10 +48,6 @@ namespace OrchardHarvest2014.WorkflowsJobsDemo.Activities {
             workflowContext.SetState("EmailAddress", emailAddress);
             workflowContext.SetState("Password", password);
 
-            // We'll also set some convenient environmental variables here that are useful for email templates.
-            // When an email is sent from a background task, WorkContext is null.
-            workflowContext.SetState("SiteBaseUrl", _wca.GetContext().CurrentSite.BaseUrl);
-
             yield return T("Proceed");
         }
     }
