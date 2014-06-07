@@ -67,7 +67,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Styles\workflows-activity-assign-roles.css" />
+    <Content Include="Styles\orchard-harvest-email-logo.png" />
     <Content Include="Web.config" />
     <Content Include="Scripts\Web.config" />
     <Content Include="Styles\Web.config" />
@@ -101,7 +101,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\AssignRolesActivity.cs" />
     <Compile Include="Activities\CreateAccountActivity.cs" />
     <Compile Include="Activities\ActivateAccountActivity.cs" />
     <Compile Include="Activities\SignInActivity.cs" />
@@ -123,9 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Account\Dashboard.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Activity-AssignRoles.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
